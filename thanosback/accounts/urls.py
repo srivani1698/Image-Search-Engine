@@ -1,6 +1,7 @@
 from django.urls import path
 
 from django.contrib.auth import views as auth_views
+from django.conf.urls import url
 
 from . import views
 
@@ -11,10 +12,16 @@ urlpatterns = [
 	path('login/', views.loginPage, name="login"),  
 	path('logout/', views.logoutUser, name="logout"),
     path('profile/', views.viewProfile, name="profile"),
-    path('', views.home, name="home"),
+    path('advanced/', views.elastictest, name="advanced"),
+    path('form/', views.form, name="advanced"),
+    path('', views.maintest, name="home"),
+    
     path('reset_password/',
      auth_views.PasswordResetView.as_view(template_name="accounts/password_reset.html"),
      name="reset_password"),
+
+    url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        views.activate_account, name='activate'),
 
     path('reset_password_sent/', 
         auth_views.PasswordResetDoneView.as_view(template_name="accounts/password_reset_sent.html"), 

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2> form</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="patentID">patentID</label>
+      <input type="text" class="form-control" id="patentID" placeholder="Enter patentID" name="patentID" required>
+    </div>
+    <div class="form-group">
+      <label for="pid">pid</label>
+      <input type="text" class="form-control" id="pid" placeholder="Enter pid" name="pid">
+    </div>
+<div class="form-group">
+      <label for="is_multiple">is_multiple</label>
+      <input type="text" class="form-control" id="" placeholder="Enter is_multiple" name="is_multiple">
+    </div>
+
+    <div class="form-group">
+      <label for="origreftext">origin of text</label>
+      <input type="text" class="form-control" id="origreftext" placeholder="Enter origin of text" name="origreftext">
+    </div>
+   
+    <div class="form-group">
+     <label for="figid">figid</label>
+      <input type="number" class="form-control" id="figid" placeholder="Enter figid" name="figid" required>
+    </div>
+    <div class="form-group">
+      <label for="subfig">subfig</label>
+      <input type="text" class="form-control" id="subfig" placeholder="Enter subfig" name="subfig">
+    </div>
+    <div class="form-group">
+      <label for="is_caption">is_caption</label>
+      <input type="text" class="form-control" id="is_caption" placeholder="Enter is_caption" name="is_caption">
+    </div>
+    <div class="form-group">
+      <label for="description">description</label>
+      <input type="text" class="form-control" id="description" placeholder="Enter description" name="description" required>
+    </div>
+    
+     <div class="form-group">
+      <label for="aspect">Aspect</label>
+      <input type="text" class="form-control" id="aspect" placeholder="Enter Aspect" name="aspect" required>
+    </div>
+    <div class="form-group">
+      <label for="object">object</label>
+      <input type="text" class="form-control" id="object" placeholder="Enter pid" name="object">
+    </div>
+
+      
+ 
+  <label for="upload"><b>Upload an image:</b></label>
+    <input type="file" class="form-control" id="upload" name="upload" placeholder="upload" required>
+
+    <div class="container bg-light">
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+</body>
+</html>
+
