@@ -1,5 +1,6 @@
 {%  extends 'accounts/main.html' %}
 
+{% load tags %}
 {% block content %}
 
 <!DOCTYPE html>
@@ -16,6 +17,7 @@
     margin: 0;
     padding: 0;
     outline: none;
+    border: 0;
     
     font-family: 'Comfortaa', cursive;
 }
@@ -66,6 +68,50 @@ body{
     transform: translate(-50%, -50%);
     font-size: 18px;
 }
+.card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+}
+#image{
+  text-align: center;
+  
+  background-size: cover;
+  padding: 140px;
+  max-width: 100%;
+  height: auto;
+    }
+
+}​
+.cube1 {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    float: left;
+}
+.contact {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    color: red;
+    visibility: hidden;
+    opacity: 0;
+    margin: 0;
+}
+.cube1:hover .contact {
+    visibility: visible;
+    opacity: 1;
+}
+.highlight {
+    background-color: yellow;
+    width: 200px;
+}
+
+
     </style>
 </head>
 <body>
@@ -77,19 +123,94 @@ body{
     placeholder="What are you looking for?">
         <div class="searchbtn" type="submit"><i class="fas fa-search"></i></div>
 </div>
-</form>
 
-  {% if res %}
-  {% for x in res %}
+
+<div>
+    <p> Found {{total}} results for '{{query.q}}'</p>
+</div>
+{% if users %}
+<div class="card-columns">
+   {% for x in users %}
+ <div class="card">
+  <div class="cube1">
   
-  <p>{{ x.0 }},{{ x.1 }},{{ x.2 }} <img src="/dataset/{{x.4}}" width="100" height="50"> </p>
+    
+    <a href="/product/?item={{ x }}" target="_blank" title="For More details"><img class="card-img-top"src="/dataset/{{x.4}}" alt="Card image cap" width ="30",height="50">
+    
+
+     <p class="contact">Click Here for more details!</p></a>
+
+  </div>
+    <div class="card-footer">
+     
+      <small class="text-muted">{{ x.0|highlight:epid }},{{ x.1|highlight:epid }},{{ x.2|highlight:epid }}</small>
+      
+           
+        <button type="submit" class="btn btn-outline-info" name="img" id="some_value" value="{{ x.4 }}">Save</button>
+                 
+
+
+
+    </div>
+  </div>
+</form>
   {% endfor %}
-{% else %}
- <p>Not Found</p>
+  {% else %}
+  <p>not found</p>
+ 
+ </div>
 {% endif %}
+  </div>
+
+
+{% load filter_utils %}
+<!--pagination-->
+<hr>
+<div class='pagination-panel'>
+    {% if paginator.has_other_pages %}
+    <ul class="pagination">
+        {% if paginator.number == 1 %}
+            <li class="page-item disabled"><span class="page-link">⇤</span></li>
+        {% else %}
+            <li><a class="page-link" href="?page=1&q={{ query.q }}">⇤</a></li>
+        {% endif %}
+        {% if paginator.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ paginator.get_prev_page }}&q={{ query.q }}">&laquo;</a>
+        </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+        {% endif %}
+            {% for i in paginator|paginate_utils:paginator.number %}
+                {% if paginator.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link"
+                        href="?page={{ i }}&q={{ query.q }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if paginator.has_next %}
+            <li class="page-item"><a class="page-link"
+                href="?page={{ paginator.get_next_page }}&q={{ query.q }}">&raquo;</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+        {% endif %}
+        {% if paginator.number == paginator.num_pages %}
+            <li class="page-item disabled"><span class="page-link">⇥</span></li>
+        {% else %}
+            <li><a class="page-link"
+                href="?page={{ paginator.num_pages }}&q={{ query.q }}">⇥</a></li>
+        {% endif %}
+    </ul>
+    <hr>
+    {% endif %}
+</div>
+
 
 </body>
 </html>
+
 
 
 

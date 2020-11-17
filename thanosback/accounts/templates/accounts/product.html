@@ -1,0 +1,104 @@
+{%  extends 'accounts/main.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Box Design</title>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Comfortaa');
+
+*{
+    margin: 0;
+    padding: 0;
+    outline: none;
+    
+    font-family: 'Comfortaa', cursive;
+}
+
+body{
+    
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
+
+.wrapper{
+    position: relative;
+    margin-top: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0,0.6);
+    max-width: 550px;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    
+    border-radius: 5px;
+}
+
+.wrapper .input {
+    width: 85%;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.searchbtn {
+    background: #ffec00;
+    width: 10%;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    
+}
+
+.searchbtn .fas{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+}
+.card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+}
+
+    </style>
+</head>
+<body>
+
+
+<form method="post">
+{% csrf_token %}
+<div class="wrapper">
+        <input type="text" name="pid" class="input" 
+    placeholder="What are you looking for?">
+        <div class="searchbtn" type="submit"><i class="fas fa-search"></i></div>
+</div>
+</form>
+      
+      <div class="card" style="width: 18rem;">
+  <img src="/dataset/{{img}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    {% for x in ret %}
+            <p class="card-text">{{x}}<p>
+      {% endfor %} 
+    
+  </div>
+</div>
+     
+</body>
+</html>
+
+
+
+{% endblock %}

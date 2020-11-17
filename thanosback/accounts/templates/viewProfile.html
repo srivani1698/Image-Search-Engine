@@ -1,60 +1,66 @@
 {%  extends 'accounts/main.html' %}
 
 {% block content %}
-<style type="text/css">
-  .form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
-  }
-  .form-signin .checkbox {
-    font-weight: 400;
-  }
-  .form-signin .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-  }
-  .form-signin .form-control:focus {
-    z-index: 2;
-  }
-  .form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-  }
 
-  .h3{
-    text-align: center;
-  }
-</style>
 
-<div class="container">
-  <div style="text-align: center;">
-<div style="display: inline-block; text-align: left;">
-<form method="POST" class="form-signin" action="{% url 'login' %}">{% csrf_token %}
-  <h5>Your Username: {{request.user}}</h5>
-  <h1 class="h3 mb-3 font-weight-normal">Change password</h1>
-    
-    <input name="old_password" class="form-control" placeholder="Old password" type="password" id="id_old_password" required="true">
-    <input name="new_password1" class="form-control" placeholder="New password" type="password" id="id_new_password1" required="true">
-    <input name="new_password2" class="form-control" placeholder="Confirm password" type="password" id="id_new_password2" required="true">
+{% load crispy_forms_tags %}
+<!--User-->
+<br><br>
+<div class="container mx-auto">
+    <div class="row">
+       
+        <div class="col-sm-12 col-md-12 col-lg-3 pb-4">
+            <div class="card p-4">
+                <h4 class="card-title font-weight-bold text-center">Username:{{ user.username|title }}</h4>
+                <hr>
+                <div class="card-text">
+                    
+                    <p class="text-muted mb-0" style="font-size: 12px">Email:</p>
+                    <p>{{ user.email }} </p>
+                    <div>
+                        
+                        <div class="text-right">
+                            <a href="/password_change"><button type="button" class="btn btn-outline-primary btn-sm">Change
+                                    Password</button></a>
+                         <h4 class="card-title font-weight-bold text-center">Saved Images</h4>
+      {% for x in search %}
+             <p> {{ x.search }}</p>
+             <div class="row">
+            <div class="column">
+                <img src="/dataset/{{ x.search }}" alt="Card image cap" width ="100",height="0">
+            </div>
+        </div>
+         {% endfor %}
 
-    {% for field in form %}
-      {% for error in field.errors %}
-        <p style="color: red">{{ error }}</p>
-      {% endfor %}
-    {% endfor %}
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
 
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Reset</button>  
-</form>
+<!--Edit user modal-->
+<div class="modal fade" tabindex="-1" id="profileModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ user_form|crispy }}
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-
-
 
 {% endblock %}

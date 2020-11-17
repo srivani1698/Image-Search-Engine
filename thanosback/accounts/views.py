@@ -21,13 +21,14 @@ from django.core.mail import EmailMultiAlternatives
 from .token_generator import account_activation_token
 
 """
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect ,get_object_or_404,HttpResponseRedirect
 from django.contrib import messages 
 from django.contrib.auth import authenticate, login 
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib.auth import authenticate, login, logout
 
+from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail 
 from django.core.mail import EmailMultiAlternatives 
 from django.template.loader import get_template 
@@ -45,6 +46,13 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
+from django.urls import reverse
+#from accounts.models import Post
+
+from django.core.paginator import (
+    Paginator, Page, EmptyPage, PageNotAnInteger, InvalidPage
+)
+
 
 # Create your views here.
 from .models import *
@@ -55,10 +63,8 @@ from .forms import CreateUserForm
 from .etesting import eSearch
 from .etesting import search
 from .etesting import Data
+#from .es_client_service import eSearchNormalRetrieve, eSearchAdvancedRetrieve, eSearchIndexData, eSearchPaginator, eSearchRetrieveByID
 
-
-
-        
 
 def registerPage(request):
     form = CreateUserForm()
@@ -90,6 +96,7 @@ def registerPage(request):
     return render(request, 'accounts/register.html', context)
 
 
+
 def loginPage(request):
 
     if request.method == 'POST':
@@ -104,7 +111,8 @@ def loginPage(request):
         else:
             messages.info(request, 'Username OR password is incorrect')
 
-    context = {}
+    context = {
+    }
     return render(request, 'accounts/login.html', context)
 
 def logoutUser(request):
@@ -118,7 +126,9 @@ def home(request):
 
 @login_required(login_url='login')
 def viewProfile(request):
-    return render(request, 'viewProfile.html')
+    searchresult_form = history.objects.filter(username=request.user)
+    print('searchresult_form',searchresult_form)
+    return render(request, 'viewProfile.html', context={'search':searchresult_form})
 
 @login_required(login_url='login')
 def advanced(request):
@@ -134,7 +144,7 @@ def activate_account(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return HttpResponse('Your account has been activate successfully')
+        return HttpResponse('Yay! Your account has been activated successfully!')
     else:
         return HttpResponse('Activation link is invalid!')
 
@@ -157,20 +167,53 @@ def elastictest(request):
     }
     return render(request,'accounts/advanced.html',context)
 
+def product(request):
+    item = request.GET.get('item')
+    ret = item.split(",")
+    imgg = ret[0][2:-1]+"-D0"+ret[1][4:-1]+".png"
+    context={
+    'ret':ret,
+    'img':imgg
+    }
+    return render(request, 'accounts/product.html',context)
 
-
+#@csrf_exempt
+@login_required
 def maintest(request):
     res=[]
     epid=""
+    page = 1
+    print(request.POST)
     if request.method == "POST":
-        print(request.POST)
         if request.POST.get('pid'):
             epid=request.POST.get('pid')
-    res=search(q=epid)
-    context={
-    'res':res,
+            y=history(username=request.user,search=epid)
+            y.save()
+        page=1
+    imagesave=request.POST.get('img')
+    print('imagesave',imagesave)
+    x=history(username=request.user,search=imagesave)
+    x.save()
+    if request.method == "GET":
+        if request.GET.get('q'):
+            epid=request.GET.get('q')
+            page = int(request.GET.get('page', '1'))
+    
+    start = (page-1) * 10
+    end = start + 10
+    totalResults,items,posts = search(Q_text=epid,pageLowerLimit=start,pageUpperLimit=end,page=page)
+    context = {
+        'users': items,
+        'total':totalResults,
+        'epid':epid,
+        'paginator':posts,
+        'query': { 'q' : epid}
     }
-    return render(request,'accounts/dashboard.html', context=context)
+    return render(request,'accounts/dashboard.html',context)
+
+
+
+    
 
 def form(request):
     if request.method == "POST":
@@ -181,12 +224,10 @@ def form(request):
         print(name)
         fs.save(name, upload)
         if Data(request.POST):
-            return HttpResponse('successfully updated')
+            return HttpResponse('The File has been successfully indexed')
         else:
             return HttpResponse('Failed!') 
     return render(request, 'accounts/form.html')
-
-    
 
 
 
