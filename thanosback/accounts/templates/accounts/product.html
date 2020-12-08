@@ -9,6 +9,8 @@
     <title>Search Box Design</title>
     
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    {% load static %}  
+    
     <style>
         @import url('https://fonts.googleapis.com/css?family=Comfortaa');
 
@@ -71,20 +73,23 @@ body{
         float: none; /* Added */
         margin-bottom: 10px; /* Added */
 }
+.link {
+  
+  color: green;
+  padding: 5px 5px;
+  text-align: left;
+  text-decoration: underline;
+
+ 
+}
+
 
     </style>
 </head>
 <body>
 
 
-<form method="post">
-{% csrf_token %}
-<div class="wrapper">
-        <input type="text" name="pid" class="input" 
-    placeholder="What are you looking for?">
-        <div class="searchbtn" type="submit"><i class="fas fa-search"></i></div>
-</div>
-</form>
+
       
       <div class="card" style="width: 18rem;">
   <img src="/dataset/{{img}}" class="card-img-top" alt="...">
@@ -92,10 +97,21 @@ body{
     {% for x in ret %}
             <p class="card-text">{{x}}<p>
       {% endfor %} 
-    
   </div>
+  <a href="/dataset/{{img}}" class="link" download=".png">Download </a> 
+
+  <form action="{%url 'like_post' %}" method="post">
+    {% csrf_token %}
+    {% if is_liked %}
+        <button type="submit" ,name='history_id',value="{{ history_id }}" , class="btn btn-danger">Unlike </button>
+    {% else %}
+        <button type="submit" ,name='history_id',value="{{ history_id }}" , class="btn btn-primary">Like </button>
+    {% endif %}
+    </form>
+  
+  
 </div>
-     
+
 </body>
 </html>
 

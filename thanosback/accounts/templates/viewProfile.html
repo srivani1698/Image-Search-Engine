@@ -5,11 +5,25 @@
 
 {% load crispy_forms_tags %}
 <!--User-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+    .bt{
+        margin:0 auto;    
+        float: left;
+    }
+    </style>
+</head>
+<body>
+
+
 <br><br>
 <div class="container mx-auto">
     <div class="row">
        
-        <div class="col-sm-12 col-md-12 col-lg-3 pb-4">
+        <div class="col-sm-12 col-md-20 col-lg-12 pb-4">
             <div class="card p-4">
                 <h4 class="card-title font-weight-bold text-center">Username:{{ user.username|title }}</h4>
                 <hr>
@@ -18,49 +32,24 @@
                     <p class="text-muted mb-0" style="font-size: 12px">Email:</p>
                     <p>{{ user.email }} </p>
                     <div>
-                        
                         <div class="text-right">
-                            <a href="/password_change"><button type="button" class="btn btn-outline-primary btn-sm">Change
-                                    Password</button></a>
+                            <a href="/password_change"><button type="button" class="btn btn-outline-primary btn-sm bt">Change
+                                    Password</button></a> <br><br>
                          <h4 class="card-title font-weight-bold text-center">Saved Images</h4>
-      {% for x in search %}
-             <p> {{ x.search }}</p>
-             <div class="row">
-            <div class="column">
-                <img src="/dataset/{{ x.search }}" alt="Card image cap" width ="100",height="0">
+        {% for x in search %}
+            <div class="row">
+                <a href="/product/?item={{ x.search }}" target="_blank" title="For More details"><img src="/dataset/{{ x.image }}" alt="Card image cap" width ="100",height="0"></a>
+                
             </div>
-        </div>
-         {% endfor %}
-
-                            
+                <form method="get" action="{% url 'profile' %}">
+                    <button type="submit" class="btn btn-outline-info" name="delete" id="del" value="{{x.id}}">delete</button>
+                </form>                
+        {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
-        
-
-<!--Edit user modal-->
-<div class="modal fade" tabindex="-1" id="profileModal" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Profile</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ user_form|crispy }}
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+</body>
+</html>
 
 {% endblock %}

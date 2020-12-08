@@ -65,7 +65,6 @@ from .etesting import search
 from .etesting import Data
 #from .es_client_service import eSearchNormalRetrieve, eSearchAdvancedRetrieve, eSearchIndexData, eSearchPaginator, eSearchRetrieveByID
 
-
 def registerPage(request):
     form = CreateUserForm()
     if request.method == 'POST':
@@ -81,7 +80,7 @@ def registerPage(request):
             message = render_to_string('accounts/activate_account.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
@@ -94,7 +93,6 @@ def registerPage(request):
         form=CreateUserForm()
     context = {'form':form}
     return render(request, 'accounts/register.html', context)
-
 
 
 def loginPage(request):
@@ -123,10 +121,15 @@ def logoutUser(request):
 def home(request):
     return render(request, 'accounts/dashboard.html')
 
-
+@csrf_exempt
 @login_required(login_url='login')
 def viewProfile(request):
     searchresult_form = history.objects.filter(username=request.user)
+    if request.method == "GET":
+        if request.GET.get('delete'):
+            todel=request.GET.get('delete')
+            searchresult_form = history.objects.filter(id=todel).delete()
+            return HttpResponseRedirect('/profile/')
     print('searchresult_form',searchresult_form)
     return render(request, 'viewProfile.html', context={'search':searchresult_form})
 
@@ -167,22 +170,43 @@ def elastictest(request):
     }
     return render(request,'accounts/advanced.html',context)
 
+def Like(request):
+   
+    post = get_object_or_404(history, id=request.POST.get('history_id'))
+    is_liked = False
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        is_liked = False
+    else:
+        post.likes.add(request.user)
+        is_liked = True
+
+    return HttpResponseRedirect(post.get_absolute_url())
+
+
 def product(request):
     item = request.GET.get('item')
-    ret = item.split(",")
-    imgg = ret[0][2:-1]+"-D0"+ret[1][4:-1]+".png"
+    ret,imgg = getImgVal(item)
     context={
     'ret':ret,
-    'img':imgg
+    'item':item,
+    'img':imgg,
+    
     }
     return render(request, 'accounts/product.html',context)
 
-#@csrf_exempt
+def getImgVal(input):
+    ret = input.split(",")
+    imgg = ret[0][2:-1]+"-D0"+ret[1][4:-1]+".png"
+    return ret,imgg
+
+@csrf_exempt
 @login_required
 def maintest(request):
     res=[]
     epid=""
     page = 1
+    imgg = ""
     print(request.POST)
     if request.method == "POST":
         if request.POST.get('pid'):
@@ -190,10 +214,12 @@ def maintest(request):
             y=history(username=request.user,search=epid)
             y.save()
         page=1
-    imagesave=request.POST.get('img')
-    print('imagesave',imagesave)
-    x=history(username=request.user,search=imagesave)
-    x.save()
+        imagesave=request.POST.get('imgg')
+        print('imagesave',imagesave)
+        if imagesave:
+            ret,imgg = getImgVal(imagesave)
+        x=history(username=request.user,search=imagesave,image=imgg)
+        x.save()
     if request.method == "GET":
         if request.GET.get('q'):
             epid=request.GET.get('q')
@@ -207,7 +233,8 @@ def maintest(request):
         'total':totalResults,
         'epid':epid,
         'paginator':posts,
-        'query': { 'q' : epid}
+        'query': { 'q' : epid},
+        'img':imgg
     }
     return render(request,'accounts/dashboard.html',context)
 
@@ -228,7 +255,5 @@ def form(request):
         else:
             return HttpResponse('Failed!') 
     return render(request, 'accounts/form.html')
-
-
 
 

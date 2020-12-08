@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+if DEBUG:
+    EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms'
+    
+    
 ]
+
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,6 +72,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+            'tags': 'thanosback.templatetags.highlight_tag',
+            }
         },
     },
 ]
@@ -124,6 +135,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'dataset')
+MEDIA_URL = '/dataset/'
+
 #SMTP Configuration
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -132,4 +146,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'srivani98vegunta@gmail.com'
 EMAIL_HOST_PASSWORD = 'ramapadma98'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+GOOGLE_RECAPTCHA_SECRET_KEY = '6Ler4OEZAAAAACM8YUtRHFl73EGryc3XrffCxvLy'
 

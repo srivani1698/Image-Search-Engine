@@ -1,17 +1,26 @@
 {%  extends 'accounts/main.html' %}
 
 {% load tags %}
+
 {% block content %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Search Box Design</title>
-	
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
-	<style>
-		@import url('https://fonts.googleapis.com/css?family=Comfortaa');
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Search Box Design</title>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Comfortaa');
 
 *{
     margin: 0;
@@ -116,13 +125,19 @@ body{
 </head>
 <body>
 
-<form method="post">
+<form id='vani' method="post">
 {% csrf_token %}
 <div class="wrapper">
-        <input type="text" name="pid" class="input" 
+        <input type="text" id='pid' name="pid"  class="form-control" 
     placeholder="What are you looking for?">
         <div class="searchbtn" type="submit"><i class="fas fa-search"></i></div>
+        
+        <div class="input-group-append">
+        <button id="s2t-btn" type="button" class="btn btn-outline-secondary speech" onclick="recognition.start()"><i class="fas fa-microphone"></i></button>
+        </div>
+
 </div>
+
 
 
 <div>
@@ -133,37 +148,30 @@ body{
    {% for x in users %}
  <div class="card">
   <div class="cube1">
-  
-    
     <a href="/product/?item={{ x }}" target="_blank" title="For More details"><img class="card-img-top"src="/dataset/{{x.4}}" alt="Card image cap" width ="30",height="50">
+         <p class="contact">Click Here for more details!</p></a>
+  </div>
+
+    
+    <small class="text-muted">{{ x.0|highlight:epid }},{{ x.1|highlight:epid }},{{ x.2|highlight:epid }}</small>
+    <button id='btn1' type="submit" class="btn btn-outline-info" name="imgg"  value="{{ x }}">Save</button>    
+    <a href="/dataset/{{x.4}}" class="link" download=".png">Download </a> 
+    
     
 
-     <p class="contact">Click Here for more details!</p></a>
-
-  </div>
-    <div class="card-footer">
-     
-      <small class="text-muted">{{ x.0|highlight:epid }},{{ x.1|highlight:epid }},{{ x.2|highlight:epid }}</small>
-      
-           
-        <button type="submit" class="btn btn-outline-info" name="img" id="some_value" value="{{ x.4 }}">Save</button>
-                 
-
-
-
-    </div>
+   
   </div>
 </form>
   {% endfor %}
   {% else %}
   <p>not found</p>
- 
+
  </div>
 {% endif %}
   </div>
 
 
-{% load filter_utils %}
+{% load page %}
 <!--pagination-->
 <hr>
 <div class='pagination-panel'>
@@ -207,8 +215,21 @@ body{
     {% endif %}
 </div>
 
+{% block javascript %}
 
+<script>
+    const SpeechRecognition = window.webkitSpeechRecognition;
+    var recognition = new SpeechRecognition();
+    recognition.onresult = function(event) {
+    if (event.results.length > 0) {
+      pid.value = event.results[0][0].transcript;
+      pid.form.submit();
+    }
+  }
+</script>
+{% endblock %}
 </body>
+
 </html>
 
 
