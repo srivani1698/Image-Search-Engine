@@ -7,16 +7,19 @@ from . import views
 
 
 
+
 urlpatterns = [
-	path('register/', views.registerPage, name="register"),
-	path('login/', views.loginPage, name="login"),  
-	path('logout/', views.logoutUser, name="logout"),
+    path('register/', views.registerPage, name="register"),
+    path('', views.loginPage, name="login"),  
+    path('logout/', views.logoutUser, name="logout"),
     path('profile/', views.viewProfile, name="profile"),
     path('advanced/', views.elastictest, name="advanced"),
     path('form/', views.form, name="advanced"),
     path('product/', views.product, name="product"),
-    path('', views.maintest, name="home"),
+    path('home', views.maintest, name="home"),
+    path('like/', views.Like, name="like_post"),
     
+
 
    
     

@@ -1,0 +1,114 @@
+{%  extends 'accounts/main.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Box Design</title>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Comfortaa');
+
+*{
+    margin: 0;
+    padding: 0;
+    outline: none;
+    
+    font-family: 'Comfortaa', cursive;
+}
+
+body{
+    
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
+
+.wrapper{
+    position: relative;
+    margin-top: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0,0.6);
+    max-width: 550px;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    
+    border-radius: 5px;
+}
+
+.wrapper .input {
+    width: 85%;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.searchbtn {
+    background: #ffec00;
+    width: 10%;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    
+}
+
+.searchbtn .fas{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+}
+    </style>
+</head>
+<body>
+
+
+
+{% if users %}
+    {% for x in users %}
+      <p>{{ x.0 }},{{ x.1 }},{{ x.2 }} <a href="??item={{ x.0 }} "target="_blank"><img src="/dataset/{{x.4}}" width="100" height="50"></a></p>
+    {% endfor %}
+{% else %}
+    <p>Not found!</p>
+{% endif %}
+
+
+
+{% if users.has_other_pages %}
+  <ul class="pagination">
+    {% if users.has_previous %}
+      <li><a href="??page={{ users.previous_page_number }}&res={{res}}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in users.paginator.page_range %}
+      {% if users.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if users.has_next %}
+      <li><a href="?page={{ users.next_page_number }}&res={{res}}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
+</body>
+</html>
+
+
+
+{% endblock %}
